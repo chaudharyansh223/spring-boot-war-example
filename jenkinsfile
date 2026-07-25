@@ -4,6 +4,9 @@ pipeline {
             lable "slave"
         }
     }
+    tools{
+        maven "jenkins-maven"
+    }
 
     stages{
         stage("test"){
