@@ -1,0 +1,48 @@
+pipeline {
+    agent{
+        node {
+            lable "slave"
+        }
+    }
+
+    stages{
+        stage("test"){
+            steps{
+                sh 'mvn test'
+            }
+        }
+        stage("build"){
+            steps{
+                sh 'mvn package'
+            }
+        }
+        stage("testing locally"){
+            steps{
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat-access', path: '', url: 'http://192.168.247.128:8082')], contextPath: '/hello-world-0.0.1-SNAPSHOT/', war: '**/*.war'
+
+            }
+        }
+        stage("deploye to production"){
+            input{
+                message "should we continue"
+                ok "continue"
+                steps{
+                    deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat-access', path: '', url: 'http://192.168.247.143:8082')], contextPath: '/hello-world-0.0.1-SNAPSHOT/', war: '**/*.war'
+
+                }
+            }
+        }
+        
+    }
+    post{
+        always{
+            echo "end pipeline"
+        }
+        failure{
+            echo "pipeline failed"
+        }
+        success{
+            echo "pipeline successfull"
+        }
+    }
+}
