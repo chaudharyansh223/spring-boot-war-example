@@ -33,11 +33,11 @@ pipeline {
                 steps{
                     deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat-access', path: '', url: 'http://192.168.247.143:8082')], contextPath: '/hello-world-0.0.1-SNAPSHOT/', war: '**/*.war'
 
-                }
-            }
-        }
-        
+             }
+         }
     }
+        
+    
     post{
         always{
             echo "end pipeline"
