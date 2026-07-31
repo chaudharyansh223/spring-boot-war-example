@@ -1,5 +1,5 @@
 pipeline {
-    agent{
+    agent {
         node {
             label "slave"
         }
@@ -14,39 +14,38 @@ pipeline {
                 sh 'mvn test'
             }
         }
+
         stage("build"){
             steps{
                 sh 'mvn package'
             }
         }
+
         stage("testing locally"){
             steps{
-                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat-access', path: '', url: 'http://192.168.247.128:8082')], contextPath: '/hello-world-0.0.1-SNAPSHOT/', war: '**/*.war'
-
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat-access', path: '', url: 'http://192.168.247.145:8082')], contextPath: '/hello-world-0.0.1-SNAPSHOT/ ', war: '**/*.war'
             }
         }
-        stage("deploye to production"){
+
+        stage("deploy to prod"){
             input{
-                message "should we continue"
-                ok "continue"
+                message did we continue
+                ok yes continue
             }
             steps{
-                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat-access', path: '', url: 'http://192.168.247.143:8082')], contextPath: '/hello-world-0.0.1-SNAPSHOT/', war: '**/*.war'
-
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat-access', path: '', url: 'http://192.168.247.143:8082')], contextPath: '/hello-world-0.0.1-SNAPSHOT/ ', war: '**/*.war'
             }
         }
     }
-        
-    
     post{
         always{
-            echo "end pipeline"
+            echo "pipeline ends"
         }
         failure{
             echo "pipeline failed"
         }
         success{
-            echo "pipeline successfull"
+            echo "pipeline sucessfull"
         }
     }
 }
